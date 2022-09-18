@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta http-equiv="X-UA-compatible" content="IE-edge">
+<meta name="viewport" content="width=device-width ,initial-scale=1.0">
+<title>Tic Tac Toe game</title>
+<style type="text/css">
+*{
+padding:0;
+margin:0;
+box-sizing:border-box;
+transition:all .6s ease;
+font-family:'Poppins',sans-serif;
+}
+body{
+min-height:100vh;
+background:#111;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+text-shadow:0 3px 10px #000;
+}
+.name{
+margin:30px 0;
+color:rgba(255,255,255,0.8);
+letter-spacing:1px;
+}.name span{
+color:#1a57f2;
+}
+.dash{
+width:390px;
+padding:10px;
+margin:0 0 25px;
+box-shadow:0 1px 10px #000;
+display:flex;
+justify-content:center;
+align-items:center;
+border-radius:6px;
+}
+.dash .text{
+padding:10px;
+border-radius:6px;
+font-size:17px;
+font-weight:600;
+box-shadow:0 1px 10px #000;
+background:#111;
+color:#1a57f2;
+}
+.gboard{
+width:390px;
+height:390px;
+display:flex;
+justify-content:center;
+align-items:center;
+flex-wrap:wrap;
+}
+.hidde-gboard{
+transform:scale(0);
+opacity:0;
+}
+.box{
+width:31%;
+height:31%;
+margin:3px;
+box-shadow:0 1px 10px #000;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:48px;
+font-weight:400;
+color:#1a57f2;
+}
+.select{
+color:#111;
+background:#1a57f2;
+}
+.result-box{
+width:390px;
+padding:15px;
+box-shadow:0 1px 10px #000;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+gap:24px;
+width:390px;
+padding:15px;
+box-shadow:0 1px 10px #000;
+position:absolute;
+top:50%;left:50%;
+background:#111;
+z-index:9;
+transform:translate(-50%,-50%) scale(0);
+opacity:0;
+}
+.show-result{
+transform:translate(-50%,-50%) scale(1);
+opacity:1;
+}
+.result-box .result-text{
+color:rgba(255,255,255,0.8);
+letter-spacing:2px;
+}
+.result-box .replay-btn{
+border:none;
+outline:none;
+background:none;
+box-shadow:0 1px 10px #000;
+padding:7px 9px;
+font-size:16px;
+color:#1a57f2;
+font-weight:600;
+}
+.result-box .replay-btn:hover{
+background:#1a57f2;
+color:#111;
+}
+</style>
+</head>
+<body>
+<h2 class="name">X<span>O</span> Game</h2>
+<!--turns div-->
+<div class="game">
+<div class="dash">
+<h3 class="text">X's turn now</h3>
+</div>
+<!--game board-->
+<div class="gboard">
+<div class="box" id="b1"></div>
+<div class="box" id="b2"></div>
+<div class="box" id="b3"></div>
+
+<div class="box" id="b4"></div>
+<div class="box" id="b5"></div>
+<div class="box" id="b6"></div>
+
+<div class="box" id="b7"></div>
+<div class="box" id="b8"></div>
+<div class="box" id="b9"></div>
+</div>
+
+</div>
+<div class="result-box">
+<h3 class="result-text"></h3>
+<button class="replay-btn">Replay !</button>
+</div>
+<script type="text/javascript">
+var boxs = document.querySelectorAll('.box');
+var gameBoard = document.querySelector('.game');
+var dashBoard = document.querySelector('.dash');
+var resultBox = document.querySelector('.result-box');
+var resultText = document.querySelector('.result-text');
+var replayBtn = document.querySelector('.replay-btn');
+let turn='x';
+window.onload =() =>{
+var boxs = document.querySelectorAll('.box');
+for(let i= 0;i < boxs.length; i++){
+boxs[i].setAttribute('onclick','selBox(this)')
+}
+};
+function gameRes(){
+//select the winner
+function select(n1,n2,n3){
+//over the game
+function gameOver(v){
+if(v == true){
+resultText.innerHTML = `${boxs[n1].innerText} player Won the game !`;
+boxs[n1].classList.add('select');
+boxs[n2].classList.add('select');
+boxs[n3].classList.add('select');
+setTimeout(()=>{
+boxs.forEach( box =>{
+box.innerText = '';});
+dashBoard.innerHTML = `<h3 class="text">X's turn now</h3>`;
+boxs[n1].classList.remove('select');
+boxs[n2].classList.remove('select');
+boxs[n3].classList.remove('select');
+turn = 'x';
+resultBox.classList.add('show-result')
+gameBoard.classList.add('hidde-gboard')
+},500);
+}
+if(v == false){
+resultText.innerHTML = `Tie the game !`;
+boxs.forEach( box =>{
+box.classList.add('select')
+})
+setTimeout(()=>{
+boxs.forEach( box =>{
+box.innerText = '';
+box.classList.remove('select')
+});
+turn = 'x';
+resultBox.classList.add('show-result')
+gameBoard.classList.add('hidde-gboard')
+},500);
+}
+}
+//winning condition
+if(boxs[n1].innerText == boxs[n2].innerText && boxs[n2].innerText == boxs[n3].innerText && boxs[n1].innerText != ''){
+gameOver(true);
+}
+//if no winner
+else if(boxs[n1].innerText != boxs[n2].innerText != boxs[n3].innerText /*others*/ && boxs[0].innerText != '' && boxs[1].innerText != '' && boxs[2].innerText != '' && boxs[3].innerText != '' && boxs[4].innerText != '' && boxs[5].innerText != '' && boxs[6].innerText != '' && boxs[7].innerText != '' && boxs[8].innerText != ''){
+gameOver(false);
+}
+}
+//Horizontally
+select(0,1,2)
+select(3,4,5)
+select(6,7,8)
+
+//Vertically
+select(0,3,6)
+select(1,4,7)
+select(2,5,8)
+
+//start,center,end | left||right
+select(0,4,8)
+select(2,4,6)
+};
+function selBox(box){
+if(turn === 'x' && box.innerText == ''){
+box.innerText = 'X';
+turn = 'o'
+dashBoard.innerHTML = `<h3 class="text">O's turn now</h3>`;
+}
+else if(turn === 'o' && box.innerText == ''){
+box.innerText = 'O';
+turn = 'x'
+dashBoard.innerHTML = `<h3 class="text">X's turn now</h3>`;
+}
+resultBox.classList.remove('show-result')
+gameRes()
+};
+// if the game has finished & clicking on replay button
+replayBtn.onclick = ()=>{
+resultBox.classList.remove('show-result')
+gameBoard.classList.remove('hidde-gboard')
+selBox();
+}
+</script>
+</body>
+</html>
